@@ -37,10 +37,12 @@ export function changerEtape(clients, utilisateur, id, etape) {
 // Seuls ces trois champs sont modifiables depuis la fiche : un commercial ne peut pas
 // changer le propriétaire ou l'étape en glissant un champ en plus.
 export function modifierFiche(clients, utilisateur, id, { contact, telephone, montant_fcfa }) {
+  const montant = String(montant_fcfa ?? "").trim();
   const changement = {
-    contact: String(contact).trim(),
-    telephone: String(telephone).trim(),
-    montant_fcfa: Number(montant_fcfa),
+    contact: String(contact ?? "").trim(),
+    telephone: String(telephone ?? "").trim(),
+    // Number("") vaut 0 : un champ vide doit être refusé, pas enregistré à 0.
+    montant_fcfa: montant === "" ? NaN : Number(montant),
   };
   if (!changement.contact) throw new Error("Le contact est obligatoire");
   if (!/^\+?[0-9 ]{6,20}$/.test(changement.telephone)) throw new Error("Téléphone invalide");

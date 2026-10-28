@@ -22,11 +22,13 @@ function element(balise, attributs = {}, ...enfants) {
   return el;
 }
 
-// Applique une action métier ; une erreur (droits, validation) est montrée sans casser l'écran.
+// Applique une action métier ; une erreur (droits, validation, stockage) est renvoyée sans casser l'écran.
+// On sauvegarde avant de remplacer l'état, pour que l'écran ne montre jamais un changement non enregistré.
 function appliquer(action) {
   try {
-    clients = action(clients);
-    sauverClients(clients, localStorage);
+    const suivants = action(clients);
+    sauverClients(suivants, localStorage);
+    clients = suivants;
     afficher();
     return null;
   } catch (e) {
@@ -34,12 +36,17 @@ function appliquer(action) {
   }
 }
 
+function deplacer(utilisateur, id, etape) {
+  const erreur = appliquer((cs) => changerEtape(cs, utilisateur, id, etape));
+  if (erreur) alert(erreur);
+}
+
 function carte(client, utilisateur) {
   const modifiable = peutModifier(utilisateur, client);
   const rang = ETAPES.indexOf(client.etape);
   const bouton = (texte, cible, titre) =>
     element("button", { type: "button", textContent: texte, title: titre, disabled: !cible,
-      onclick: () => appliquer((cs) => changerEtape(cs, utilisateur, client.id, cible)) });
+      onclick: () => deplacer(utilisateur, client.id, cible) });
   const el = element("article", { className: "carte", draggable: modifiable },
     element("button", { type: "button", className: "nom", textContent: client.entreprise, onclick: () => ouvrirFiche(client.id) }),
     element("div", { className: "montant", textContent: formatFCFA(client.montant_fcfa) }),
@@ -63,18 +70,18 @@ function colonne(etape, visibles, utilisateur) {
   col.addEventListener("drop", (e) => {
     e.preventDefault();
     col.classList.remove("survol");
-    appliquer((cs) => changerEtape(cs, utilisateur, e.dataTransfer.getData("text/plain"), etape));
+    deplacer(utilisateur, e.dataTransfer.getData("text/plain"), etape);
   });
   return col;
 }
 
+// Hors responsable, on vide aussi le contenu : masquer la section laisserait les totaux lisibles dans la page.
 function afficherTableau(utilisateur, visibles) {
-  const section = $("tableau");
-  section.hidden = !voitTableauDeBord(utilisateur);
-  if (section.hidden) return;
+  const autorise = voitTableauDeBord(utilisateur);
   const parEtape = totalParEtape(visibles);
-  $("total").textContent = formatFCFA(totalPipeline(visibles));
-  $("par-etape").replaceChildren(...ETAPES.map((etape) =>
+  $("tableau").hidden = !autorise;
+  $("total").textContent = autorise ? formatFCFA(totalPipeline(visibles)) : "";
+  $("par-etape").replaceChildren(...(autorise ? ETAPES : []).map((etape) =>
     element("tr", {}, element("td", { textContent: LIBELLES[etape] }), element("td", { textContent: formatFCFA(parEtape[etape] ?? 0) }))));
 }
 
