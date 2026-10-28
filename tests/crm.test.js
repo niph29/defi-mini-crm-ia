@@ -46,6 +46,9 @@ test("la fiche refuse un montant négatif ou non numérique, et un téléphone i
   assert.throws(() => modifierFiche(clients, awa, "a", { ...fiche, montant_fcfa: "-5" }), /montant/);
   assert.throws(() => modifierFiche(clients, awa, "a", { ...fiche, montant_fcfa: "abc" }), /montant/);
   assert.throws(() => modifierFiche(clients, awa, "a", { ...fiche, telephone: "<script>" }), /Téléphone/);
+  // Number("") vaut 0 : un montant vide ne doit pas devenir 0 FCFA.
+  assert.throws(() => modifierFiche(clients, awa, "a", { ...fiche, montant_fcfa: "" }), /montant/);
+  assert.throws(() => modifierFiche(clients, awa, "a", { ...fiche, montant_fcfa: "  " }), /montant/);
 });
 
 test("seul le responsable réattribue, et seulement à un commercial", () => {
