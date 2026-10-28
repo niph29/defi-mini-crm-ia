@@ -12,14 +12,15 @@ dont vous ne savez pas d'où il vient.*
 | Heure | Ce que j'ai demandé à l'IA (en résumé) | Ce qu'elle a produit | Ce que j'ai vérifié, corrigé ou refusé |
 |---|---|---|---|
 | 10h25 | Lire le dépôt, résumer les modalités, repérer les défauts, proposer un plan | Résumé, 7 défauts suspectés, plan en 6 étapes | J'ai validé le plan. Je lui ai demandé de passer à Python + PostgreSQL : l'IA a refusé à juste titre (le README impose un site statique, here.now ne fait que du statique, la persistance attendue est `localStorage`). On reste en JS vanilla |
-| 10h35 | Écrire d'abord les tests des défauts, les lancer, puis corriger | 7 tests, tous rouges sur le code de départ (commit `test: ... tests rouges`), puis corrections | J'ai vérifié la sortie rouge (ex. total `'10000090000'` au lieu de `190000`), puis 8/8 verts après correction. J'ai gardé un commit séparé pour les tests rouges, comme preuve dans l'historique |
-| 10h50 | Actions métier testables (`crm.js`) : changer d'étape, modifier la fiche, réattribuer, persister | Module + 10 tests | Exigé : chaque action revérifie les droits (pas seulement les boutons masqués) et la fiche n'accepte qu'une liste blanche de champs, sinon un commercial pourrait s'attribuer un client en ajoutant `proprietaire` |
-| 11h05 | Interface : pipeline (boutons + glisser-déposer), fiche en `<dialog>`, tableau de bord | `index.html`, `app.js` réécrits | Test de bout en bout dans un navigateur (Playwright) : 16 / 7 / 30 clients visibles selon l'utilisateur, persistance après rechargement, réattribution. **Bug trouvé** : le champ « Commercial attribué » restait visible pour un commercial (la règle CSS `display: block` écrasait `hidden`), corrigé. Totaux recalculés à part : 17 650 000 FCFA, identiques |
+| 10h36 | Écrire d'abord les tests des défauts, les lancer, puis corriger | 7 tests, tous rouges sur le code de départ (commit `test: ... tests rouges`), puis corrections | J'ai vérifié la sortie rouge (ex. total `'10000090000'` au lieu de `190000`), puis 8/8 verts après correction. J'ai gardé un commit séparé pour les tests rouges, comme preuve dans l'historique |
+| 10h37 | Actions métier testables (`crm.js`) : changer d'étape, modifier la fiche, réattribuer, persister | Module + 10 tests | Exigé : chaque action revérifie les droits (pas seulement les boutons masqués) et la fiche n'accepte qu'une liste blanche de champs, sinon un commercial pourrait s'attribuer un client en ajoutant `proprietaire` |
+| 10h39 | Interface : pipeline (boutons + glisser-déposer), fiche en `<dialog>`, tableau de bord | `index.html`, `app.js` réécrits | Test de bout en bout dans un navigateur (Playwright) : 16 / 7 / 30 clients visibles selon l'utilisateur, persistance après rechargement, réattribution. **Bug trouvé** : le champ « Commercial attribué » restait visible pour un commercial (la règle CSS `display: block` écrasait `hidden`), corrigé. Totaux recalculés à part : 17 650 000 FCFA, identiques |
 
 ## Les erreurs de l'IA que j'ai repérées
 
 - Proposition d'un backend Python + PostgreSQL (à ma demande) : contraire au règlement (site statique), écarté.
 - Champ de réattribution visible pour un commercial (CSS qui écrase `hidden`). Sans conséquence sur les droits car `reattribuer()` vérifie le rôle, mais l'interface était trompeuse. Repéré par le test navigateur, pas par les tests unitaires.
+- L'IA a rempli la chronologie avec des heures **estimées** (10h50, 11h05) au lieu des heures réelles. Repéré en comparant avec `git log`, corrigé avec les heures des commits.
 
 ## Les défauts trouvés dans le code et les données de départ
 
