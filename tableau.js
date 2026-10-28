@@ -12,3 +12,8 @@ export function totalPipeline(clients) {
     .filter((c) => c.etape !== "perdu")
     .reduce((somme, c) => somme + Number(c.montant_fcfa), 0);
 }
+
+// 1250000 -> "1 250 000 FCFA"
+export function formatFCFA(montant) {
+  return `${String(Math.round(Number(montant))).replace(/\B(?=(\d{3})+(?!\d))/g, " ")} FCFA`;
+}
