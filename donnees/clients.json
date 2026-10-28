@@ -36,7 +36,7 @@
     "telephone": "+221 77 000 04 14",
     "ville": "Dakar",
     "etape": "qualifie",
-    "montant_fcfa": "90000",
+    "montant_fcfa": 90000,
     "proprietaire": "u2"
   },
   {
@@ -116,7 +116,7 @@
     "telephone": "+221 77 000 12 22",
     "ville": "Dakar",
     "etape": "prospect",
-    "montant_fcfa": "750000",
+    "montant_fcfa": 750000,
     "proprietaire": "u2"
   },
   {
@@ -157,7 +157,7 @@
     "ville": "Dakar",
     "etape": "prospect",
     "montant_fcfa": 1200000,
-    "proprietaire": "u1 "
+    "proprietaire": "u1"
   },
   {
     "id": "c17",
@@ -246,7 +246,7 @@
     "telephone": "+221 77 000 25 35",
     "ville": "Dakar",
     "etape": "gagne",
-    "montant_fcfa": "150000",
+    "montant_fcfa": 150000,
     "proprietaire": null
   },
   {
