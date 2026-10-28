@@ -87,4 +87,4 @@ par l'IA.
 - Site publié sur here.now : https://sonic-pagoda-qrm8.here.now/
 - Fichiers publiés (facultatif) : captures d'écran dans [`captures/`](captures/) (vue responsable, fiche client, vue commercial)
 - Outil(s) d'IA utilisé(s) : Claude Code
-- Heure de départ / heure de fin : 10h22 / 
+- Heure de départ / heure de fin : 10h22 / 11h11
