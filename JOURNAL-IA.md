@@ -13,10 +13,13 @@ dont vous ne savez pas d'où il vient.*
 |---|---|---|---|
 | 10h25 | Lire le dépôt, résumer les modalités, repérer les défauts, proposer un plan | Résumé, 7 défauts suspectés, plan en 6 étapes | J'ai validé le plan. Je lui ai demandé de passer à Python + PostgreSQL : l'IA a refusé à juste titre (le README impose un site statique, here.now ne fait que du statique, la persistance attendue est `localStorage`). On reste en JS vanilla |
 | 10h35 | Écrire d'abord les tests des défauts, les lancer, puis corriger | 7 tests, tous rouges sur le code de départ (commit `test: ... tests rouges`), puis corrections | J'ai vérifié la sortie rouge (ex. total `'10000090000'` au lieu de `190000`), puis 8/8 verts après correction. J'ai gardé un commit séparé pour les tests rouges, comme preuve dans l'historique |
+| 10h50 | Actions métier testables (`crm.js`) : changer d'étape, modifier la fiche, réattribuer, persister | Module + 10 tests | Exigé : chaque action revérifie les droits (pas seulement les boutons masqués) et la fiche n'accepte qu'une liste blanche de champs, sinon un commercial pourrait s'attribuer un client en ajoutant `proprietaire` |
+| 11h05 | Interface : pipeline (boutons + glisser-déposer), fiche en `<dialog>`, tableau de bord | `index.html`, `app.js` réécrits | Test de bout en bout dans un navigateur (Playwright) : 16 / 7 / 30 clients visibles selon l'utilisateur, persistance après rechargement, réattribution. **Bug trouvé** : le champ « Commercial attribué » restait visible pour un commercial (la règle CSS `display: block` écrasait `hidden`), corrigé. Totaux recalculés à part : 17 650 000 FCFA, identiques |
 
 ## Les erreurs de l'IA que j'ai repérées
 
--
+- Proposition d'un backend Python + PostgreSQL (à ma demande) : contraire au règlement (site statique), écarté.
+- Champ de réattribution visible pour un commercial (CSS qui écrase `hidden`). Sans conséquence sur les droits car `reattribuer()` vérifie le rôle, mais l'interface était trompeuse. Repéré par le test navigateur, pas par les tests unitaires.
 
 ## Les défauts trouvés dans le code et les données de départ
 
@@ -27,7 +30,11 @@ dont vous ne savez pas d'où il vient.*
 | **Droits** : pas de refus par défaut ; un utilisateur absent fait planter, un rôle inconnu voit les clients sans propriétaire | `acces.js` | Une règle d'accès doit refuser ce qu'elle ne connaît pas | `u?.role`, seuls `commercial` et `responsable` ont des droits | `tests/acces.test.js` : « refus par défaut » |
 | Montants en texte (`"90000"`) : la somme concatène les chaînes | `clients.json` (c04, c12, c25), `tableau.js` | Totaux du tableau de bord faux (`'10000090000'`) | Données corrigées + `Number()` dans les calculs | `tests/tableau.test.js`, `tests/donnees.test.js` |
 | Propriétaire `"u1 "` avec une espace | `clients.json` (c16) | Awa ne voit pas son propre client Yoff Digital | Donnée corrigée | `tests/donnees.test.js` : « propriétaire existant ou null » |
+| **Droits** : le tableau de bord était affiché à tous, et calculé sur **tous** les clients | `app.js` | Un commercial voyait le chiffre d'affaires global | Section masquée et non calculée hors responsable, via `voitTableauDeBord()` | `tests/crm.test.js` : « le tableau de bord n'est visible que du responsable ». Honnêtement, ce test n'a pas pu échouer avant : la règle était absente du code (dans `app.js`, non testable). Je l'ai extraite dans `acces.js` pour la rendre testable |
+| Fichier parasite `New folder/départ.txt` | racine | Code / fichier mort | Supprimé | (pas de test pertinent) |
 
 ## Ce que je ferais avec plus de temps
 
--
+- **Les droits vérifiés dans le navigateur ne protègent rien en vrai** : le sélecteur « Connecté en tant que » simule une connexion, et toutes les données sont téléchargées. En production : vraie authentification et API (par ex. FastAPI + PostgreSQL) qui filtre les clients côté serveur. `crm.js` isole déjà les actions, ce qui faciliterait ce passage.
+- Historique des changements d'étape (qui, quand), utile pour un CRM.
+- Préciser avec le client si « pipeline en cours » doit inclure les affaires gagnées (j'ai suivi le README : seul « perdu » est exclu).
