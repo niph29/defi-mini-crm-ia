@@ -83,8 +83,8 @@ par l'IA.
 
 ## Livrables (à remplir par le candidat)
 
-- Dépôt : 
-- Site publié sur here.now : 
-- Fichiers publiés (facultatif) : 
-- Outil(s) d'IA utilisé(s) : 
-- Heure de départ / heure de fin : 
+- Dépôt : https://github.com/niph29/defi-mini-crm-ia
+- Site publié sur here.now : https://sonic-pagoda-qrm8.here.now/
+- Fichiers publiés (facultatif) : captures d'écran dans [`captures/`](captures/) (vue responsable, fiche client, vue commercial)
+- Outil(s) d'IA utilisé(s) : Claude Code
+- Heure de départ / heure de fin : 10h22 / 
